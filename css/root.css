@@ -10,5 +10,12 @@
     --typePoison: rgb(149,83,205);
     --typeElectro: rgb(255,220,2);
     --typeGround: rgb(166,116,57);
+    --typeFlying: rgb(150,202,255);
+    --typeRock: rgb(187,170,102);
+    --typeFighting: rgb(187,85,69);
+    --typeIce: rgb(116,207,192);
+    --typePsychic: rgb(255,99,128);
+    --typeGhost: rgb(110,66,112);
+    --typeDragon: rgb(86,112,190);
   }
 
