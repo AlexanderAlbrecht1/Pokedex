@@ -4,6 +4,9 @@ body {
 }
 
 header {
+    position: sticky;
+    top: 0;
+    background-color: var(--greyblue);
     display: flex;
     justify-content: space-around;
     align-items: center;
@@ -41,17 +44,29 @@ h1 {
 
 h3 {
     text-align: center;
+    padding-top: 8px;
+}
+
+.pokecardArea {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    padding: 0 32px;
+    flex-wrap: wrap;
 }
 
 .pokemonCard {
     display: flex;
     flex-direction: column;
-    max-width: 200px;
+    width: 200px;
     border: 1px solid white;
     border-radius: 5px;
+    margin: 16px;
 }
 
 .pokemonType {
     display: flex;
     justify-content: space-around;
+    padding-bottom: 8px;
+    font-size: 20px;
 }

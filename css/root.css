@@ -2,4 +2,13 @@
     --greyblue: rgb(40,42,54);
     --pokeRed: rgb(228,31,37);
     --pokeBlack: rgb(43,43,41);
+    --typeWater: rgb(44,155,227);
+    --typeGrass: rgb(98,188,90);
+    --typeFire: rgb(255,66,27);
+    --typeBug: rgb(146,193,41);
+    --typeNormal: rgb(187,187,170);
+    --typePoison: rgb(149,83,205);
+    --typeElectro: rgb(255,220,2);
+    --typeGround: rgb(166,116,57);
   }
+
