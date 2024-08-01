@@ -135,8 +135,8 @@ h3 {
     border-radius: 15px;
 }
 
-/* flip-pkecard */
-/* The flip card container - set the width and height to whatever you want. We have added the border property to demonstrate that the flip itself goes out of the box on hover (remove perspective if you don't want the 3D effect */
+/* flip-pokecard */
+
 .flip-card {
     background-color: transparent;
     width: 210px;
@@ -192,5 +192,40 @@ h3 {
     transform: rotateY(180deg);
     border: 1px solid white;
     border-radius: 5px;
-    
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
   }
+
+  .flip-card-back img {
+    height: 200px;
+    width: 200px;
+  }
+
+  /*loading spinner*/
+#loading{
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    
+}
+
+@keyframes spinIndicator {
+    100% {
+       transform: rotate(360deg);
+    }
+ }
+
+#loading-image{
+    height: 100px;
+    width: 100px;
+    margin-bottom: 32px;
+    animation: spinIndicator 1s linear infinite;
+}
