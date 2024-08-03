@@ -16,6 +16,7 @@ async function loadPokeCard(pokemonJson, i) {
 
     let pokemonName = await pokemonJson.name;
     let pokemonPicture = await pokemonJson.sprites.front_shiny;
+    let pokemonID = await pokemonJson.id;
     let pokemonPictureBack = await pokemonJson.sprites.back_shiny;
     let pokemonType = await pokemonJson.types[0].type.name;
     if (await pokemonJson.types[1] === undefined) {
@@ -33,6 +34,7 @@ async function loadPokeCard(pokemonJson, i) {
         <div class="flip-card-inner">
             <div class="flip-card-front">
                 <h3>${pokemonName}</h3>
+                <span><b>id: ${pokemonID}</b></span>
                 <img src="${pokemonPictureBack}" alt="
                 Oops... unfortunately you lost the Pokemon">
                     <div class="pokemonType"> 
@@ -42,9 +44,10 @@ async function loadPokeCard(pokemonJson, i) {
             </div>
             <div class="flip-card-back">
                 <h3>${pokemonName}</h3>
+                <span class="cb"><b>id: ${pokemonID}</b></span>
                 <img src="${pokemonPicture}" alt="
                 Oops... unfortunately you lost the Pokemon">
-                <button onclick="openBigPokemonCard('${pokemonName}','${pokemonType}')" type="button" class="btn btn-secondary btn-lg btn-block">View details</button>
+                <button onclick="openBigPokemonCard('${pokemonName}','${pokemonType}')" type="button" class="btn btn-secondary btn-lg btn-block mb-2">View details</button>
             </div>
         </div>
     </div>
@@ -257,4 +260,5 @@ document.onreadystatechange = function () {
             document.querySelector("main").style.visibility = "visible";
         }, 3000)
     }
-};
+}; 
+
