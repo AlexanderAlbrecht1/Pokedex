@@ -1,8 +1,18 @@
-<div onclick="openBigPokemonCard('${pokemonName}','${pokemonPicture}','${pokemonType}')" class="pokemonCard" id="pokemonCard${i}">
-    <h3>${pokemonName}</h3>
-    <img src="${pokemonPicture}" alt="">
-        <div class="pokemonType">
-            <span class="typeBox">${pokemonType}</span>
-            <span class="typeBox">${pokemonType2}</span>
-        </div>    
+<div class="bigPokemonCard" id="bigPokemonCard">
+    <div class="closeSection"> 
+        <span onclick="closeBigPokemonCard()"> X </span>
     </div>
+    <h3>${pokemonName}</h3>
+    <div class="evolution">
+        <img class="evo1" src="" alt="">
+        <img class="evo2" src="" alt="">
+        <img class="evo3" src="" alt="">
+    </div>
+    <div class="size">
+        <span>weight:</span>
+        <span>height:</span>
+    </div>
+
+    
+</div>
+

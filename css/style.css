@@ -124,11 +124,11 @@ h3 {
     padding: 8px 16px;
 }
 
-.closeSection span {
-    font-size: 28px;
+.closeSection img {
+    height: 28px;
 }
 
-.closeSection span:hover {
+.closeSection img:hover {
     cursor: pointer;
 }
 
@@ -226,4 +226,38 @@ h3 {
     width: 100px;
     margin-bottom: 32px;
     animation: spinIndicator 1s linear infinite;
+}
+
+#dataBG {
+    width: 90%;
+    background-color: #e5e4e2;
+    border-radius: 15px;
+    flex: 1;
+    margin: 16px;
+    border: 3px dashed var(--greyblue);
+}
+
+#data {
+    padding: 8px;
+    color: black !important;
+}
+
+.arrows {
+    width: 100%;
+    padding: 16px;
+    display: flex;
+    justify-content: space-between;   
+}
+
+.arrows img {
+    height: 32px;
+    width: 32px;
+}
+
+.arrows img:hover {
+    cursor: pointer;
+}
+
+.evolution img {
+    height: 200px;
 }
