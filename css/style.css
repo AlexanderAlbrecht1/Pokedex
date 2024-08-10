@@ -50,6 +50,12 @@ h3 {
     color: black !important;
 }
 
+main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
 .pokecardArea {
     display: flex;
     flex-direction: row;
