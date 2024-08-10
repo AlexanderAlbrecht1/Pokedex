@@ -1,5 +1,6 @@
 let pokedex = {};
-let currentIndex = 1;
+let currentIndex = 0;
+let results = [];
 
 
 async function init() {
@@ -49,10 +50,9 @@ async function fetchPokemonData() {
 
 
 function loadPokeCard() {
-    let loadCount = 20; // Anzahl der Pokémon, die bei jedem Klick geladen werden
-    let endIndex = Math.min(currentIndex + loadCount, Object.keys(pokedex).length); // Maximal bis zum Ende des Pokedex
-
-    for (let i = currentIndex; i <= endIndex; i++) {
+    let loadCount = 20; 
+    let endIndex = Math.min(currentIndex + loadCount, Object.keys(pokedex).length);
+    for (let i = currentIndex+1; i <= endIndex; i++) {
 
         document.getElementById('pokecardArea').innerHTML += `
             <div class="flip-card">
@@ -350,6 +350,67 @@ function hideLoadingSpinner() {
     document.getElementById("loading").style.display = "none";
     document.querySelector("main").style.visibility = "visible";
     enableScroll();
+}
+
+function searchAndDisplayPokemons() {
+    let query = document.getElementById('searchInput').value.trim().toLowerCase();
+    results = [];
+    if (query.length >= 3) {
+        
+        let searchResults = searchPokemonByName(query);
+        displaySearchResults(searchResults);
+    } else {
+        loadPokeCard();
+    }
+}
+
+function searchPokemonByName(query) {
+    
+    for (let i = 1; i < Object.keys(pokedex).length; i++) {
+        if (pokedex[i].name.toLowerCase().includes(query)) {
+            results.push(pokedex[i]);
+        }
+    }
+    
+    return results;
+}
+
+function displaySearchResults(pokemons) {
+    document.getElementById('pokecardArea').innerHTML = ' ';
+
+    if (results.length > 0) {
+        for (let i = 0; i < results.length; i++) {
+            document.getElementById('pokecardArea').innerHTML += `
+            <div class="flip-card">
+                <div class="flip-card-inner">
+                    <div class="flip-card-front" id="flip-card-front${i}">
+                        <h3>${results[i].name}</h3>
+                        <span><b>id: ${results[i].id}</b></span>
+                        <img src="${results[i].sprites.back_shiny}" alt="Oops... unfortunately you lost the Pokemon">
+                        <div class="pokemonType"> 
+                            <span id="pokemonCard${i}" class="typeBox">${results[i].types[0]}</span>
+                            <span id="pokemonType2${i}" class="typeBox">${results[i].types[1]}</span>
+                        </div>
+                    </div> 
+                    <div class="flip-card-back" id="flip-card-back${i}">
+                        <h3>${results[i].name}</h3>
+                        <span class="cb"><b>id: ${results[i].id}</b></span>
+                        <img src="${results[i].sprites.front_shiny}" alt="Oops... unfortunately you lost the Pokemon">
+                        <button onclick="openBigPokemonCard(${i})" type="button" class="btn btn-secondary btn-lg btn-block mb-2">View details</button>
+                    </div>
+                </div>
+            </div> 
+    `;
+    checkType2(results[i].types[1], i);
+    typeBackgroundColorSmall1(results[i].types[0], i);
+    typeBackgroundColorSmall2(results[i].types[1], i);
+    
+        }
+    } else {
+        document.getElementById('pokecardArea').innerHTML = `<p>No Pokémon found matching "${document.getElementById('searchInput').value}".</p>`;
+    }
+
+    
 }
 
 
