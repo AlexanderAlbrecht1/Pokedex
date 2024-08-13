@@ -113,7 +113,7 @@ main {
     align-items: center;
     width: 400px;
     height: 600px;
-    border: 1px solid white;
+    border: 10px double white;
     border-radius: 5px;
     box-shadow: rgba(255, 255, 255, 0.5) 0px 8px 24px;
 }
@@ -204,7 +204,7 @@ main {
 .flip-card-back img {
     margin: 8px 4px;
     flex: 1;
-    
+
 }
 
 /*loading spinner*/
@@ -218,7 +218,7 @@ main {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-
+    background-color: var(--greyblue);
 }
 
 @keyframes spinIndicator {
@@ -235,11 +235,15 @@ main {
 }
 
 #dataBG {
+    display: flex;
+    flex-direction: row-reverse;
+    padding: 8px;
+    color: var(--greyblue);
     width: 90%;
     background-color: #e5e4e2;
     border-radius: 15px;
     flex: 1;
-    margin: 16px;
+    margin: 8px;
     border: 3px dashed var(--greyblue);
 }
 
@@ -250,9 +254,10 @@ main {
 
 .arrows {
     width: 100%;
-    padding: 16px;
+    padding: 0 16px;
+    padding-bottom: 8px;
     display: flex;
-    justify-content: space-between;   
+    justify-content: space-between;
 }
 
 .arrows img {
@@ -266,4 +271,33 @@ main {
 
 .evolution img {
     height: 200px;
+}
+
+.stats-container {
+    display: flex;
+    flex-direction: column;
+    gap: 5px; /* Abstand zwischen den Balken */
+    margin-top: 10px; /* Abstand nach oben */
+}
+
+.stat-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Abstand zwischen dem Label und dem Balken */
+}
+
+.stat-label {
+    width: 100px; /* Feste Breite für die Stat-Labels */
+}
+
+.stat-value {
+    height: 20px;
+    background-color: #4CAF50; /* Farbe der Balken */
+    border-radius: 5px; /* Abgerundete Ecken */
+}
+
+.stat-value span {
+    margin-left: 5px; /* Abstand zwischen der Zahl und dem Balkenrand */
+    color: white; /* Textfarbe */
+    font-weight: bold;
 }
