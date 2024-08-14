@@ -19,12 +19,12 @@
 <body onload="init()">  
     <header>
         <div class="logoArea">
-            <img src="img/pokeball.png" alt="">
+            <a href="#main"><img src="img/pokeball.png" alt=""></a>
             <p>Pokédex</p>
         </div>
-        <div class="serachArea">
+        <div class="searchArea">
             <input id="searchInput" type="text" placeholder="Search Pokémon..." onkeyup="searchAndDisplayPokemons()">
-            <img src="img/magnifying-glass-solid.svg" alt="">
+            <img onclick="clearSearch()" src="img/x-solid.svg" alt="">
         </div>
     </header>
     <div id="loading">
@@ -37,9 +37,9 @@
             
         </div>
 
-        <button  id="loadMorePokemonButton" onclick="loadPokeCard()" type="button" class="btn btn-secondary btn-lg btn-block mb-2">load more Pokemon</button>
+        <button  id="loadMorePokemonButton" onclick="loadMorePokemon()" type="button" class="btn btn-secondary btn-lg btn-block mb-2">load more Pokemon</button>
 
-        <div class="BigCardContainer none" id="BigCardContainer">
+        <div class="BigCardContainer none" onclick="closeBigPokemonCard()" id="BigCardContainer">
             
         </div>
     </main>

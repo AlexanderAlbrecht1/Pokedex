@@ -3,6 +3,10 @@ body {
     color: white;
 }
 
+span {
+    color: var(--greyblue);
+}
+
 header {
     position: sticky;
     top: 0;
@@ -16,7 +20,7 @@ header {
 }
 
 .logoArea,
-.serachArea {
+.searchArea {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -33,10 +37,14 @@ header {
     padding-left: 16px;
 }
 
-.serachArea img {
+.searchArea img {
     height: 40px;
     width: 40px;
     padding-left: 16px;
+}
+
+.searchArea img:hover {
+    cursor: pointer;
 }
 
 h1 {
@@ -209,7 +217,7 @@ main {
 
 /*loading spinner*/
 #loading {
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 0;
     right: 0;
@@ -235,15 +243,13 @@ main {
 }
 
 #dataBG {
-    display: flex;
-    flex-direction: row-reverse;
     padding: 8px;
     color: var(--greyblue);
     width: 90%;
     background-color: #e5e4e2;
     border-radius: 15px;
     flex: 1;
-    margin: 8px;
+    margin: 4px;
     border: 3px dashed var(--greyblue);
 }
 
@@ -271,6 +277,7 @@ main {
 
 .evolution img {
     height: 200px;
+    width: 100%;
 }
 
 .stats-container {
@@ -283,7 +290,6 @@ main {
 .stat-bar {
     display: flex;
     align-items: center;
-    gap: 10px; /* Abstand zwischen dem Label und dem Balken */
 }
 
 .stat-label {
@@ -297,7 +303,36 @@ main {
 }
 
 .stat-value span {
-    margin-left: 5px; /* Abstand zwischen der Zahl und dem Balkenrand */
-    color: white; /* Textfarbe */
+    margin-left: 5px;
+    margin-bottom: 4px;
+    color: var(--greyblue);
     font-weight: bold;
+}
+
+.bigCardHead {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding: 0 8px;
+}
+
+.bigCardHead img {
+    height: 24px;
+    width: 24px;
+}
+
+.bigCardHead img:hover {
+    cursor: pointer;
+}
+
+.bigCardHead span {
+    font-weight: bold;
+    color: var(--greyblue);
+}
+
+.size {
+    display: flex;
+    justify-content: space-around;
+    width: 100%;
 }

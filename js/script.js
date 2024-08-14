@@ -4,13 +4,11 @@ let results = [];
 
 
 async function init() {
-
+    showLoadingSpinner();
     document.getElementById('pokecardArea').innerHTML = ``;
     await fetchPokemonData();
-
-    loadPokeCard();
-
-
+    hideLoadingSpinner();
+    loadPokeCard(25);
 }
 
 async function fetchPokemonData() {
@@ -44,17 +42,14 @@ async function fetchPokemonData() {
             console.error(`Fehler beim Laden der Daten für Pokémon mit ID ${id}:`, error);
         }
     }
-
     return pokedex;
 }
 
 
-function loadPokeCard() {
-    showLoadingSpinner();
-    let loadCount = 20;
-    let endIndex = Math.min(currentIndex + loadCount, Object.keys(pokedex).length);
+function loadPokeCard(count) {
+    let loadCount = `${count}`;
+    let endIndex = Math.min(currentIndex + +loadCount, Object.keys(pokedex).length);
     for (let i = currentIndex + 1; i <= endIndex; i++) {
-
         document.getElementById('pokecardArea').innerHTML += `
             <div class="flip-card">
                 <div class="flip-card-inner">
@@ -80,14 +75,10 @@ function loadPokeCard() {
         typeBackgroundColorSmall1(pokedex[i].types[0], i);
         typeBackgroundColorSmall2(pokedex[i].types[1], i);
     }
-
-    currentIndex = endIndex; // Update den aktuellen Index
-
-    // Überprüfe, ob alle Pokémon geladen sind, und deaktiviere den Button, wenn dies der Fall ist
+    currentIndex = endIndex;
     if (currentIndex >= Object.keys(pokedex).length) {
         document.getElementById('loadMorePokemonButton').classList.add('none');
     }
-    hideLoadingSpinner();
 }
 
 function checkType2(pokemonType2, i) {
@@ -235,43 +226,54 @@ function typeBackgroundColorSmall2(pokemonType, i) {
 
 async function openBigPokemonCard(i) {
     let pokemon = pokedex[i];
+    let weightKg = (pokemon.weight * 0.1).toFixed(1);
+    weightKg = weightKg.endsWith('.0') ? weightKg.slice(0, -2) : weightKg;
     document.getElementById('BigCardContainer').classList.remove('none');
     document.getElementById('BigCardContainer').innerHTML = '';
-
-    // Erzeuge HTML für die Statistiken
     let statsHTML = '';
-
     for (let x = 0; x < pokemon.stats.length; x++) {
         statsHTML += `
             <div class="stat-bar">
                 <div class="stat-label">${pokemon.stats[x].name}:</div>
-                <div class="stat-value" id="stat-value${x}" style="width: ${pokemon.stats[x].value}px;">
+                <div class="stat-value" id="stat-value${x}" style="width: ${pokemon.stats[x].value}px; max-width: 200px !important">
                     <span>${pokemon.stats[x].value}</span>
                 </div>
             </div>
         `;
     }
-
     document.getElementById('BigCardContainer').innerHTML += `
     <div class="bigPokemonCard" id="bigPokemonCard">
-    <h3>${pokedex[i].name}</h3>
+        <div class="bigCardHead">
+            <span>id: ${pokemon.id}</span>
+            <h3>${pokemon.name}</h3>
+            <img onclick="closeBigPokemonCard()" src="img/xmark-solid.svg" alt="close">
+        </div>
     <div class="evolution">
-        <img class="evo1" src="${pokedex[i].sprites.dream_world}" alt="">
+        <img class="evo1" src="${pokemon.sprites.dream_world}" alt="">
     </div>
+
+    <div class="size">
+    <div class="weight">
+        <span>weight:</span> 
+        <span>${weightKg}kg</span>
+    </div>
+    <div class="heigth">
+        <span>height:</span> 
+        <span>${(pokemon.height / 10)} m</span>
+    </div>
+    </div>
+
     <div id="dataBG">
+    
         <div id="data"
-            <div class="size">
-                <span>weight: ${pokedex[i].weight} kg</span>
-                <span>height: ${pokedex[i].height} m</span>
-            </div>
+            
             <div id="statsContainer${i}" class="stats-container">
-            ${statsHTML}
+                ${statsHTML}
             </div>
         </div>
         <div class="arrows">
-            <img onclick="previouslyPokemon(${i})" src="img/circle-arrow-left-solid.svg" alt="back">
-            <img onclick="closeBigPokemonCard()" src="img/xmark-solid.svg" alt="close">
-            <img onclick="nextPokemon(${i})" src="img/circle-arrow-right-solid.svg" alt="forward">
+            <img onclick="previouslyPokemon(${i},event)" src="img/circle-arrow-left-solid.svg" alt="back">
+            <img onclick="nextPokemon(${i},event)" src="img/circle-arrow-right-solid.svg" alt="forward">
         </div>
     </div>
     
@@ -339,6 +341,7 @@ function closeBigPokemonCard() {
 }
 
 function nextPokemon(i) {
+    event.stopPropagation();
     i++;
     if (i >= pokedex.length) {
         i = 1;
@@ -346,28 +349,43 @@ function nextPokemon(i) {
     } else {
         openBigPokemonCard(i);
     }
-    
+
 }
 
 function nextResultPokemon(i) {
+    event.stopPropagation();
     i++;
     if (i >= results.length) {
-        i = 0; 
-        openBigResultCard(i);   
+        i = 0;
+        openBigResultCard(i);
     } else {
         openBigResultCard(i);
     }
-    
+
 }
 
 function previouslyPokemon(i) {
+    event.stopPropagation();
     i--;
-    openBigPokemonCard(i);
+    if (i == 0) {
+        i = (+pokedex.length - 1);
+        openBigPokemonCard(i);
+    } else {
+        openBigPokemonCard(i);
+    }
+
 }
 
 function previouslyResultPokemon(i) {
+    event.stopPropagation();
     i--;
-    openBigResultCard(i);
+    if (i < 0) {
+        i = (results.length - 1);
+        openBigResultCard(i)
+    } else {
+        openBigResultCard(i);
+    }
+
 }
 
 function disableScroll() {
@@ -398,7 +416,16 @@ function searchAndDisplayPokemons() {
         let searchResults = searchPokemonByName(query);
         displaySearchResults(searchResults);
     } else {
-        loadPokeCard();
+        if (query.length == 0) {
+            currentIndex = 0;
+            document.getElementById('pokecardArea').innerHTML = ``;
+            loadPokeCard(25);
+
+        } else {
+            document.getElementById('pokecardArea').innerHTML = `<p> Please type 3 letters minimum. </p>`;
+            document.getElementById('loadMorePokemonButton').classList.add('none')
+        }
+
     }
 }
 
@@ -453,6 +480,8 @@ function displaySearchResults(pokemons) {
 
 function openBigResultCard(i) {
     let pokemon = results[i];
+    let weightKg = (pokemon.weight * 0.1).toFixed(1);
+    weightKg = weightKg.endsWith('.0') ? weightKg.slice(0, -2) : weightKg;
     document.getElementById('BigCardContainer').classList.remove('none');
     document.getElementById('BigCardContainer').innerHTML = '';
 
@@ -463,7 +492,7 @@ function openBigResultCard(i) {
         statsHTML += `
             <div class="stat-bar">
                 <div class="stat-label">${pokemon.stats[x].name}:</div>
-                <div class="stat-value" id="stat-value${x}" style="width: ${pokemon.stats[x].value}px;">
+                <div class="stat-value" id="stat-value${x}" style="width: ${pokemon.stats[x].value}px; max-width: 200px !important">
                     <span>${pokemon.stats[x].value}</span>
                 </div>
             </div>
@@ -472,23 +501,36 @@ function openBigResultCard(i) {
 
     document.getElementById('BigCardContainer').innerHTML += `
     <div class="bigPokemonCard" id="bigPokemonCard">
-    <h3>${pokemon.name}</h3>
-    <div class="evolution">
-        <img class="evo1" src="${pokemon.sprites.dream_world}" alt="">
-    </div>
-    <div id="dataBG">
-        <div id="data"
-            <div class="size">
-                <span>weight: ${pokemon.weight} kg</span>
-                <span>height: ${pokemon.height} m</span>
-            </div>
-            <div id="statsContainer${i}" class="stats-container">
-            ${statsHTML}
-            </div>
+        <div class="bigCardHead">
+            <span>id: ${pokemon.id}</span>
+            <h3>${pokemon.name}</h3>
+            <img onclick="closeBigPokemonCard()" src="img/xmark-solid.svg" alt="close">
         </div>
+        <div class="evolution">
+            <img class="evo1" src="${pokemon.sprites.dream_world}" alt="">
+        </div>
+
+        <div class="size">
+        <div class="weight">
+            <span>weight:</span> 
+            <span>${weightKg} kg</span>
+        </div>
+        <div class="heigth">
+            <span>height:</span> 
+            <span>${(pokemon.height / 10)} m</span>
+        </div>
+        </div>
+
+        <div id="dataBG">
+            <div id="data"
+                
+                <div id="statsContainer${i}" class="stats-container">
+                    ${statsHTML}
+                </div>
+            </div>
         <div class="arrows">
             <img onclick="previouslyResultPokemon(${i})" src="img/circle-arrow-left-solid.svg" alt="back">
-            <img onclick="closeBigPokemonCard()" src="img/xmark-solid.svg" alt="close">
+            
             <img onclick="nextResultPokemon(${i})" src="img/circle-arrow-right-solid.svg" alt="forward">
         </div>
     </div>
@@ -498,6 +540,22 @@ function openBigResultCard(i) {
     `;
     typeBackgroundColorBig(pokemon.types[0], i);
     disableScroll();
+}
+
+function loadMorePokemon() {
+    showLoadingSpinner();
+    setTimeout(() => {
+        loadPokeCard(20); // Karten laden
+        hideLoadingSpinner(); // Lade-Spinner ausblenden
+    }, 500); // Simulierte Ladezeit von 1 Sekunde, kannst du je nach Bedarf anpassen
+}
+
+function clearSearch() {
+    results = [];
+    document.getElementById('searchInput').value = '';
+    document.getElementById('pokecardArea').innerHTML = '';
+    currentIndex = 0;
+    loadPokeCard(25);
 }
 
 
