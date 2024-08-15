@@ -1,8 +1,3 @@
-let pokedex = [];
-let currentIndex = 0;
-let results = [];
-
-
 async function init() {
     showLoadingSpinner();
     document.getElementById('pokecardArea').innerHTML = ``;
@@ -12,16 +7,16 @@ async function init() {
 }
 
 async function fetchPokemonData() {
-    let baseUrl = 'https://pokeapi.co/api/v2/pokemon/';
+    const baseUrl = 'https://pokeapi.co/api/v2/pokemon/';
     async function getPokemonData(id) {
-        let response = await fetch(`${baseUrl}${id}`);
-        let data = await response.json();
-        return data;
+        const response = await fetch(`${baseUrl}${id}`);
+        return response.json();
     }
-    for (let id = 1; id <= 151; id++) {
-        try {
-            let data = await getPokemonData(id);
-            pokedex[id] = {
+    const requests = Array.from({ length: 300 }, (_, i) => getPokemonData(i + 1));
+    try {
+        let results = await Promise.all(requests);
+        results.forEach(data => {
+            pokedex[data.id] = {
                 name: data.name,
                 id: data.id,
                 height: data.height,
@@ -38,43 +33,20 @@ async function fetchPokemonData() {
                     dream_world: data.sprites.other.dream_world.front_default,
                 }
             };
-        } catch (error) {
-            console.error(`Fehler beim Laden der Daten für Pokémon mit ID ${id}:`, error);
-        }
+        });
+        return pokedex;
+    } catch (error) {
+        console.error('Fehler beim Laden der Pokémon-Daten:', error);
     }
-    return pokedex;
 }
-
 
 function loadPokeCard(count) {
     let loadCount = `${count}`;
     let endIndex = Math.min(currentIndex + +loadCount, Object.keys(pokedex).length);
     for (let i = currentIndex + 1; i <= endIndex; i++) {
-        document.getElementById('pokecardArea').innerHTML += `
-            <div class="flip-card">
-                <div class="flip-card-inner">
-                    <div class="flip-card-front" id="flip-card-front${i}">
-                        <h3>${pokedex[i].name}</h3>
-                        <span><b>id: ${pokedex[i].id}</b></span>
-                        <img src="${pokedex[i].sprites.back_shiny}" alt="Oops... unfortunately you lost the Pokemon">
-                        <div class="pokemonType"> 
-                            <span id="pokemonCard${i}" class="typeBox">${pokedex[i].types[0]}</span>
-                            <span id="pokemonType2${i}" class="typeBox">${pokedex[i].types[1]}</span>
-                        </div>
-                    </div> 
-                    <div class="flip-card-back" id="flip-card-back${i}">
-                        <h3>${pokedex[i].name}</h3>
-                        <span class="cb"><b>id: ${pokedex[i].id}</b></span>
-                        <img src="${pokedex[i].sprites.front_shiny}" alt="Oops... unfortunately you lost the Pokemon">
-                        <button onclick="openBigPokemonCard(${i})" type="button" class="btn btn-secondary btn-lg btn-block mb-2">View details</button>
-                    </div>
-                </div>
-            </div> 
-    `;
-        checkType2(pokedex[i].types[1], i);
-        typeBackgroundColorSmall1(pokedex[i].types[0], i);
-        typeBackgroundColorSmall2(pokedex[i].types[1], i);
+        generateSmallCard(pokedex[i], i);
     }
+    document.getElementById('loadMorePokemonButton').classList.remove('none')
     currentIndex = endIndex;
     if (currentIndex >= Object.keys(pokedex).length) {
         document.getElementById('loadMorePokemonButton').classList.add('none');
@@ -88,141 +60,23 @@ function checkType2(pokemonType2, i) {
 }
 
 function typeBackgroundColorSmall1(pokemonType, i) {
-    if (pokemonType == 'water') {
-        document.getElementById(`pokemonCard${i}`).style.backgroundColor = "var(--typeWater)";
-        document.getElementById(`flip-card-front${i}`).style.border = "10px double var(--typeWater)";
-        document.getElementById(`flip-card-back${i}`).style.border = "10px double var(--typeWater)";
-    }
-    if (pokemonType == 'grass') {
-        document.getElementById(`pokemonCard${i}`).style.backgroundColor = "var(--typeGrass)";
-        document.getElementById(`flip-card-front${i}`).style.border = "10px double var(--typeGrass)";
-        document.getElementById(`flip-card-back${i}`).style.border = "10px double var(--typeGrass)";
-    }
-    if (pokemonType == 'fire') {
-        document.getElementById(`pokemonCard${i}`).style.backgroundColor = "var(--typeFire)";
-        document.getElementById(`flip-card-front${i}`).style.border = "10px double var(--typeFire)";
-        document.getElementById(`flip-card-back${i}`).style.border = "10px double var(--typeFire)";
-    }
-    if (pokemonType == 'bug') {
-        document.getElementById(`pokemonCard${i}`).style.backgroundColor = "var(--typeBug)";
-        document.getElementById(`flip-card-front${i}`).style.border = "10px double var(--typeBug)";
-        document.getElementById(`flip-card-back${i}`).style.border = "10px double var(--typeBug)";
-    }
-    if (pokemonType == 'normal') {
-        document.getElementById(`pokemonCard${i}`).style.backgroundColor = "var(--typeNormal)";
-        document.getElementById(`flip-card-front${i}`).style.border = "10px double var(--typeNormal)";
-        document.getElementById(`flip-card-back${i}`).style.border = "10px double var(--typeNormal)";
-    }
-    if (pokemonType == 'poison') {
-        document.getElementById(`pokemonCard${i}`).style.backgroundColor = "var(--typePoison)";
-        document.getElementById(`flip-card-front${i}`).style.border = "10px double var(--typePoison)";
-        document.getElementById(`flip-card-back${i}`).style.border = "10px double var(--typePoison)";
-    }
-    if (pokemonType == 'electric') {
-        document.getElementById(`pokemonCard${i}`).style.backgroundColor = "var(--typeElectro)";
-        document.getElementById(`flip-card-front${i}`).style.border = "10px double var(--typeElectro)";
-        document.getElementById(`flip-card-back${i}`).style.border = "10px double var(--typeElectro)";
-    }
-    if (pokemonType == 'ground') {
-        document.getElementById(`pokemonCard${i}`).style.backgroundColor = "var(--typeGround)";
-        document.getElementById(`flip-card-front${i}`).style.border = "10px double var(--typeGround)";
-        document.getElementById(`flip-card-back${i}`).style.border = "10px double var(--typeGround)";
-    }
-    if (pokemonType == 'flying') {
-        document.getElementById(`pokemonCard${i}`).style.backgroundColor = "var(--typeFlying)";
-        document.getElementById(`flip-card-front${i}`).style.border = "10px double var(--typeFlying)";
-        document.getElementById(`flip-card-back${i}`).style.border = "10px double var(--typeFlying)";
-    }
-    if (pokemonType == 'rock') {
-        document.getElementById(`pokemonCard${i}`).style.backgroundColor = "var(--typeRock)";
-        document.getElementById(`flip-card-front${i}`).style.border = "10px double var(--typeRock)";
-        document.getElementById(`flip-card-back${i}`).style.border = "10px double var(--typeRock)";
-    }
-    if (pokemonType == 'fighting') {
-        document.getElementById(`pokemonCard${i}`).style.backgroundColor = "var(--typeFighting)";
-        document.getElementById(`flip-card-front${i}`).style.border = "10px double var(--typeFighting)";
-        document.getElementById(`flip-card-back${i}`).style.border = "10px double var(--typeFighting)";
-    }
-    if (pokemonType == 'ice') {
-        document.getElementById(`pokemonCard${i}`).style.backgroundColor = "var(--typeIce)";
-        document.getElementById(`flip-card-front${i}`).style.border = "10px double var(--typeIce)";
-        document.getElementById(`flip-card-back${i}`).style.border = "10px double var(--typeIce)";
-    }
-    if (pokemonType == 'psychic') {
-        document.getElementById(`pokemonCard${i}`).style.backgroundColor = "var(--typePsychic)";
-        document.getElementById(`flip-card-front${i}`).style.border = "10px double var(--typePsychic)";
-        document.getElementById(`flip-card-back${i}`).style.border = "10px double var(--typePsychic)";
-    }
-    if (pokemonType == 'ghost') {
-        document.getElementById(`pokemonCard${i}`).style.backgroundColor = "var(--typeGhost)";
-        document.getElementById(`flip-card-front${i}`).style.border = "10px double var(--typeGhost)";
-        document.getElementById(`flip-card-back${i}`).style.border = "10px double var(--typeGhost)";
-    }
-    if (pokemonType == 'dragon') {
-        document.getElementById(`pokemonCard${i}`).style.backgroundColor = "var(--typeDragon)";
-        document.getElementById(`flip-card-front${i}`).style.border = "10px double var(--typeDragon)";
-        document.getElementById(`flip-card-back${i}`).style.border = "10px double var(--typeDragon)";
-    }
-    if (pokemonType == 'fairy') {
-        document.getElementById(`pokemonCard${i}`).style.backgroundColor = "var(--typeFairy)";
-        document.getElementById(`flip-card-front${i}`).style.border = "10px double var(--typeFairy)";
-        document.getElementById(`flip-card-back${i}`).style.border = "10px double var(--typeFairy)";
+    const color = typeColors[pokemonType];
+    let card = document.getElementById(`pokemonCard${i}`);
+    let front = document.getElementById(`flip-card-front${i}`);
+    let back = document.getElementById(`flip-card-back${i}`);
+    if (color) {
+        card.style.backgroundColor = color;
+        front.style.border = `10px double ${color}`;
+        back.style.border = `10px double ${color}`;
     }
 }
 
 function typeBackgroundColorSmall2(pokemonType, i) {
-
-    if (pokemonType == 'water') {
-        document.getElementById(`pokemonType2${i}`).style.backgroundColor = "var(--typeWater)";
-    }
-    if (pokemonType == 'grass') {
-        document.getElementById(`pokemonType2${i}`).style.backgroundColor = "var(--typeGrass)";
-    }
-    if (pokemonType == 'fire') {
-        document.getElementById(`pokemonType2${i}`).style.backgroundColor = "var(--typeFire)";
-    }
-    if (pokemonType == 'bug') {
-        document.getElementById(`pokemonType2${i}`).style.backgroundColor = "var(--typeBug)";
-    }
-    if (pokemonType == 'normal') {
-        document.getElementById(`pokemonType2${i}`).style.backgroundColor = "var(--typeNormal)";
-    }
-    if (pokemonType == 'poison') {
-        document.getElementById(`pokemonType2${i}`).style.backgroundColor = "var(--typePoison)";
-    }
-    if (pokemonType == 'electric') {
-        document.getElementById(`pokemonType2${i}`).style.backgroundColor = "var(--typeElectro)";
-    }
-    if (pokemonType == 'ground') {
-        document.getElementById(`pokemonType2${i}`).style.backgroundColor = "var(--typeGround)";
-    }
-    if (pokemonType == 'flying') {
-        document.getElementById(`pokemonType2${i}`).style.backgroundColor = "var(--typeFlying)";
-    }
-    if (pokemonType == 'rock') {
-        document.getElementById(`pokemonType2${i}`).style.backgroundColor = "var(--typeRock)";
-    }
-    if (pokemonType == 'fighting') {
-        document.getElementById(`pokemonType2${i}`).style.backgroundColor = "var(--typeFighting)";
-    }
-    if (pokemonType == 'ice') {
-        document.getElementById(`pokemonType2${i}`).style.backgroundColor = "var(--typeIce)";
-    }
-    if (pokemonType == 'psychic') {
-        document.getElementById(`pokemonType2${i}`).style.backgroundColor = "var(--typePsychic)";
-    }
-    if (pokemonType == 'ghost') {
-        document.getElementById(`pokemonType2${i}`).style.backgroundColor = "var(--typeGhost)";
-    }
-    if (pokemonType == 'dragon') {
-        document.getElementById(`pokemonType2${i}`).style.backgroundColor = "var(--typeDragon)";
-    }
-    if (pokemonType == 'fairy') {
-        document.getElementById(`pokemonType2${i}`).style.backgroundColor = "var(--typeFairy)";
+    let color = typeColors[pokemonType];
+    if (color) {
+        document.getElementById(`pokemonType2${i}`).style.backgroundColor = color;
     }
 }
-
-
 
 async function openBigPokemonCard(i) {
     let pokemon = pokedex[i];
@@ -232,106 +86,17 @@ async function openBigPokemonCard(i) {
     document.getElementById('BigCardContainer').innerHTML = '';
     let statsHTML = '';
     for (let x = 0; x < pokemon.stats.length; x++) {
-        statsHTML += `
-            <div class="stat-bar">
-                <div class="stat-label">${pokemon.stats[x].name}:</div>
-                <div class="stat-value" id="stat-value${x}" style="width: ${pokemon.stats[x].value}px; max-width: 200px !important">
-                    <span>${pokemon.stats[x].value}</span>
-                </div>
-            </div>
-        `;
+        statsHTML += generateStatsHTML(pokemon.stats[x], x);
     }
-    document.getElementById('BigCardContainer').innerHTML += `
-    <div class="bigPokemonCard" id="bigPokemonCard">
-        <div class="bigCardHead">
-            <span>id: ${pokemon.id}</span>
-            <h3>${pokemon.name}</h3>
-            <img onclick="closeBigPokemonCard()" src="img/xmark-solid.svg" alt="close">
-        </div>
-    <div class="evolution">
-        <img class="evo1" src="${pokemon.sprites.dream_world}" alt="">
-    </div>
-
-    <div class="size">
-    <div class="weight">
-        <span>weight:</span> 
-        <span>${weightKg}kg</span>
-    </div>
-    <div class="heigth">
-        <span>height:</span> 
-        <span>${(pokemon.height / 10)} m</span>
-    </div>
-    </div>
-
-    <div id="dataBG">
-    
-        <div id="data"
-            
-            <div id="statsContainer${i}" class="stats-container">
-                ${statsHTML}
-            </div>
-        </div>
-        <div class="arrows">
-            <img onclick="previouslyPokemon(${i},event)" src="img/circle-arrow-left-solid.svg" alt="back">
-            <img onclick="nextPokemon(${i},event)" src="img/circle-arrow-right-solid.svg" alt="forward">
-        </div>
-    </div>
-    
-    
-</div>
-    `;
+    document.getElementById('BigCardContainer').innerHTML += generateBigCardHTML(pokemon, weightKg, statsHTML, i);
     typeBackgroundColorBig(pokedex[i].types[0], i);
     disableScroll();
 }
 
 function typeBackgroundColorBig(pokemonType) {
-    if (pokemonType == 'water') {
-        document.getElementById(`bigPokemonCard`).style.backgroundColor = "var(--typeWater)";
-    }
-    if (pokemonType == 'grass') {
-        document.getElementById(`bigPokemonCard`).style.backgroundColor = "var(--typeGrass)";
-    }
-    if (pokemonType == 'fire') {
-        document.getElementById(`bigPokemonCard`).style.backgroundColor = "var(--typeFire)";
-    }
-    if (pokemonType == 'bug') {
-        document.getElementById(`bigPokemonCard`).style.backgroundColor = "var(--typeBug)";
-    }
-    if (pokemonType == 'normal') {
-        document.getElementById(`bigPokemonCard`).style.backgroundColor = "var(--typeNormal)";
-    }
-    if (pokemonType == 'poison') {
-        document.getElementById(`bigPokemonCard`).style.backgroundColor = "var(--typePoison)";
-    }
-    if (pokemonType == 'electric') {
-        document.getElementById(`bigPokemonCard`).style.backgroundColor = "var(--typeElectro)";
-    }
-    if (pokemonType == 'ground') {
-        document.getElementById(`bigPokemonCard`).style.backgroundColor = "var(--typeGround)";
-    }
-    if (pokemonType == 'flying') {
-        document.getElementById(`bigPokemonCard`).style.backgroundColor = "var(--typeFlying)";
-    }
-    if (pokemonType == 'rock') {
-        document.getElementById(`bigPokemonCard`).style.backgroundColor = "var(--typeRock)";
-    }
-    if (pokemonType == 'fighting') {
-        document.getElementById(`bigPokemonCard`).style.backgroundColor = "var(--typeFighting)";
-    }
-    if (pokemonType == 'ice') {
-        document.getElementById(`bigPokemonCard`).style.backgroundColor = "var(--typeIce)";
-    }
-    if (pokemonType == 'psychic') {
-        document.getElementById(`bigPokemonCard`).style.backgroundColor = "var(--typePsychic)";
-    }
-    if (pokemonType == 'ghost') {
-        document.getElementById(`bigPokemonCard`).style.backgroundColor = "var(--typeGhost)";
-    }
-    if (pokemonType == 'dragon') {
-        document.getElementById(`bigPokemonCard`).style.backgroundColor = "var(--typeDragon)";
-    }
-    if (pokemonType == 'fairy') {
-        document.getElementById(`bigPokemonCard`).style.backgroundColor = "var(--typeDragon)";
+    let color = typeColors[pokemonType];
+    if (color) {
+        document.getElementById('bigPokemonCard').style.backgroundColor = color;
     }
 }
 
@@ -341,51 +106,19 @@ function closeBigPokemonCard() {
 }
 
 function nextPokemon(i) {
-    event.stopPropagation();
-    i++;
-    if (i >= pokedex.length) {
-        i = 1;
-        openBigPokemonCard(i);
-    } else {
-        openBigPokemonCard(i);
-    }
-
+    nextItem(i, pokedex.length, openBigPokemonCard);
 }
 
 function nextResultPokemon(i) {
-    event.stopPropagation();
-    i++;
-    if (i >= results.length) {
-        i = 0;
-        openBigResultCard(i);
-    } else {
-        openBigResultCard(i);
-    }
-
+    nextItem(i, results.length, openBigResultCard);
 }
 
 function previouslyPokemon(i) {
-    event.stopPropagation();
-    i--;
-    if (i == 0) {
-        i = (+pokedex.length - 1);
-        openBigPokemonCard(i);
-    } else {
-        openBigPokemonCard(i);
-    }
-
+    previouslyItem(i, pokedex.length, openBigPokemonCard);
 }
 
 function previouslyResultPokemon(i) {
-    event.stopPropagation();
-    i--;
-    if (i < 0) {
-        i = (results.length - 1);
-        openBigResultCard(i)
-    } else {
-        openBigResultCard(i);
-    }
-
+    previouslyItem(i, results.length, openBigResultCard);
 }
 
 function disableScroll() {
@@ -412,7 +145,6 @@ function searchAndDisplayPokemons() {
     let query = document.getElementById('searchInput').value.trim().toLowerCase();
     results = [];
     if (query.length >= 3) {
-
         let searchResults = searchPokemonByName(query);
         displaySearchResults(searchResults);
     } else {
@@ -425,57 +157,28 @@ function searchAndDisplayPokemons() {
             document.getElementById('pokecardArea').innerHTML = `<p> Please type 3 letters minimum. </p>`;
             document.getElementById('loadMorePokemonButton').classList.add('none')
         }
-
     }
 }
 
 function searchPokemonByName(query) {
-
     for (let i = 1; i < Object.keys(pokedex).length; i++) {
         if (pokedex[i].name.toLowerCase().includes(query)) {
             results.push(pokedex[i]);
         }
     }
-
     return results;
 }
 
 function displaySearchResults(pokemons) {
     document.getElementById('pokecardArea').innerHTML = ' ';
-
     if (results.length > 0) {
         for (let i = 0; i < results.length; i++) {
-            document.getElementById('pokecardArea').innerHTML += `
-            <div class="flip-card">
-                <div class="flip-card-inner">
-                    <div class="flip-card-front" id="flip-card-front${i}">
-                        <h3>${results[i].name}</h3>
-                        <span><b>id: ${results[i].id}</b></span>
-                        <img src="${results[i].sprites.back_shiny}" alt="Oops... unfortunately you lost the Pokemon">
-                        <div class="pokemonType"> 
-                            <span id="pokemonCard${i}" class="typeBox">${results[i].types[0]}</span>
-                            <span id="pokemonType2${i}" class="typeBox">${results[i].types[1]}</span>
-                        </div>
-                    </div> 
-                    <div class="flip-card-back" id="flip-card-back${i}">
-                        <h3>${results[i].name}</h3>
-                        <span class="cb"><b>id: ${results[i].id}</b></span>
-                        <img src="${results[i].sprites.front_shiny}" alt="Oops... unfortunately you lost the Pokemon">
-                        <button onclick="openBigResultCard(${i})" type="button" class="btn btn-secondary btn-lg btn-block mb-2">View details</button>
-                    </div>
-                </div>
-            </div> 
-    `;
-            checkType2(results[i].types[1], i);
-            typeBackgroundColorSmall1(results[i].types[0], i);
-            typeBackgroundColorSmall2(results[i].types[1], i);
-
+            let pokemon = results[i];
+            generateSmallResultCard(pokemon, i);
         }
     } else {
         document.getElementById('pokecardArea').innerHTML = `<p>No Pokémon found matching "${document.getElementById('searchInput').value}".</p>`;
     }
-
-
 }
 
 function openBigResultCard(i) {
@@ -484,60 +187,11 @@ function openBigResultCard(i) {
     weightKg = weightKg.endsWith('.0') ? weightKg.slice(0, -2) : weightKg;
     document.getElementById('BigCardContainer').classList.remove('none');
     document.getElementById('BigCardContainer').innerHTML = '';
-
-    // Erzeuge HTML für die Statistiken
     let statsHTML = '';
-
     for (let x = 0; x < pokemon.stats.length; x++) {
-        statsHTML += `
-            <div class="stat-bar">
-                <div class="stat-label">${pokemon.stats[x].name}:</div>
-                <div class="stat-value" id="stat-value${x}" style="width: ${pokemon.stats[x].value}px; max-width: 200px !important">
-                    <span>${pokemon.stats[x].value}</span>
-                </div>
-            </div>
-        `;
+        statsHTML += generateStatsHTML(pokemon.stats[x], x);
     }
-
-    document.getElementById('BigCardContainer').innerHTML += `
-    <div class="bigPokemonCard" id="bigPokemonCard">
-        <div class="bigCardHead">
-            <span>id: ${pokemon.id}</span>
-            <h3>${pokemon.name}</h3>
-            <img onclick="closeBigPokemonCard()" src="img/xmark-solid.svg" alt="close">
-        </div>
-        <div class="evolution">
-            <img class="evo1" src="${pokemon.sprites.dream_world}" alt="">
-        </div>
-
-        <div class="size">
-        <div class="weight">
-            <span>weight:</span> 
-            <span>${weightKg} kg</span>
-        </div>
-        <div class="heigth">
-            <span>height:</span> 
-            <span>${(pokemon.height / 10)} m</span>
-        </div>
-        </div>
-
-        <div id="dataBG">
-            <div id="data"
-                
-                <div id="statsContainer${i}" class="stats-container">
-                    ${statsHTML}
-                </div>
-            </div>
-        <div class="arrows">
-            <img onclick="previouslyResultPokemon(${i})" src="img/circle-arrow-left-solid.svg" alt="back">
-            
-            <img onclick="nextResultPokemon(${i})" src="img/circle-arrow-right-solid.svg" alt="forward">
-        </div>
-    </div>
-    
-    
-</div>
-    `;
+    document.getElementById('BigCardContainer').innerHTML += generateBigResultCardHTML(pokemon, weightKg, statsHTML, i);
     typeBackgroundColorBig(pokemon.types[0], i);
     disableScroll();
 }
@@ -545,9 +199,9 @@ function openBigResultCard(i) {
 function loadMorePokemon() {
     showLoadingSpinner();
     setTimeout(() => {
-        loadPokeCard(20); // Karten laden
-        hideLoadingSpinner(); // Lade-Spinner ausblenden
-    }, 500); // Simulierte Ladezeit von 1 Sekunde, kannst du je nach Bedarf anpassen
+        loadPokeCard(20);
+        hideLoadingSpinner();
+    }, 500);
 }
 
 function clearSearch() {
@@ -558,5 +212,34 @@ function clearSearch() {
     loadPokeCard(25);
 }
 
+function generateSmallCard(pokemon, i) {
+    document.getElementById('pokecardArea').innerHTML += generateSmallCardHTML(pokemon, i);
+    checkType2(pokemon.types[1], i);
+    typeBackgroundColorSmall1(pokemon.types[0], i);
+    typeBackgroundColorSmall2(pokemon.types[1], i);
+}
 
+function generateSmallResultCard(pokemon, i) {
+    document.getElementById('pokecardArea').innerHTML += generateSmallResultCardHTML(pokemon, i);
+    checkType2(pokemon.types[1], i);
+    typeBackgroundColorSmall1(pokemon.types[0], i);
+    typeBackgroundColorSmall2(pokemon.types[1], i);
+}
 
+function nextItem(i, arrayLength, openCardFunction) {
+    event.stopPropagation();
+    i++;
+    if (i >= arrayLength) {
+        i = 1;
+    }
+    openCardFunction(i);
+}
+
+function previouslyItem(i, arrayLength, openCardFunction) {
+    event.stopPropagation();
+    i--;
+    if (i < 1) {
+        i = +arrayLength - 1;
+    }
+    openCardFunction(i);
+}

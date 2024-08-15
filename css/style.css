@@ -1,6 +1,12 @@
+html {
+    max-width: 1440px;
+    margin: auto;
+}
+
 body {
     background-color: var(--greyblue);
     color: white;
+    box-shadow: rgba(255, 255, 255, 0.2) 0px 30px 20px -7px;
 }
 
 span {
@@ -16,6 +22,7 @@ header {
     align-items: center;
     height: 100px;
     box-shadow: rgba(255, 255, 255, 0.2) 0px 30px 20px -7px;
+    border-radius: 10px;
     z-index: 100;
 }
 
@@ -120,7 +127,7 @@ main {
     justify-content: flex-start;
     align-items: center;
     width: 400px;
-    height: 600px;
+    height: 650px;
     border: 10px double white;
     border-radius: 5px;
     box-shadow: rgba(255, 255, 255, 0.5) 0px 8px 24px;
@@ -184,7 +191,7 @@ main {
 }
 
 .flip-card-front {
-    background-color: #e5e4e2;
+    background-color:white;
     color: black;
     border: 2px inset white;
     border-radius: 5px;
@@ -199,7 +206,7 @@ main {
 }
 
 .flip-card-back {
-    background-color: #e5e4e2;
+    background-color: white;
     transform: rotateY(180deg);
     border: 1px solid white;
     border-radius: 5px;
@@ -243,10 +250,12 @@ main {
 }
 
 #dataBG {
+    align-items: center;
+    display: flex;
     padding: 8px;
     color: var(--greyblue);
     width: 90%;
-    background-color: #e5e4e2;
+    background-color: white;
     border-radius: 15px;
     flex: 1;
     margin: 4px;
@@ -260,7 +269,7 @@ main {
 
 .arrows {
     width: 100%;
-    padding: 0 16px;
+    padding: 16px;
     padding-bottom: 8px;
     display: flex;
     justify-content: space-between;
@@ -335,4 +344,5 @@ main {
     display: flex;
     justify-content: space-around;
     width: 100%;
+    font-weight: 800;
 }
