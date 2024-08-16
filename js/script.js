@@ -12,32 +12,8 @@ async function fetchPokemonData() {
         const response = await fetch(`${baseUrl}${id}`);
         return response.json();
     }
-    const requests = Array.from({ length: 300 }, (_, i) => getPokemonData(i + 1));
-    try {
-        let results = await Promise.all(requests);
-        results.forEach(data => {
-            pokedex[data.id] = {
-                name: data.name,
-                id: data.id,
-                height: data.height,
-                weight: data.weight,
-                types: data.types.map(typeInfo => typeInfo.type.name),
-                abilities: data.abilities.map(abilityInfo => abilityInfo.ability.name),
-                stats: data.stats.map(statInfo => ({
-                    name: statInfo.stat.name,
-                    value: statInfo.base_stat
-                })),
-                sprites: {
-                    front_shiny: data.sprites.front_shiny,
-                    back_shiny: data.sprites.back_shiny,
-                    dream_world: data.sprites.other.dream_world.front_default,
-                }
-            };
-        });
-        return pokedex;
-    } catch (error) {
-        console.error('Fehler beim Laden der Pokémon-Daten:', error);
-    }
+    const requests = Array.from({ length: 151 }, (_, i) => getPokemonData(i + 1));
+    return handlePokemonDataRequests(requests);
 }
 
 function loadPokeCard(count) {
@@ -242,4 +218,32 @@ function previouslyItem(i, arrayLength, openCardFunction) {
         i = +arrayLength - 1;
     }
     openCardFunction(i);
+}
+
+async function handlePokemonDataRequests(requests) {
+    try {
+        let results = await Promise.all(requests);
+        results.forEach(data => {
+            pokedex[data.id] = {
+                name: data.name,
+                id: data.id,
+                height: data.height,
+                weight: data.weight,
+                types: data.types.map(typeInfo => typeInfo.type.name),
+                abilities: data.abilities.map(abilityInfo => abilityInfo.ability.name),
+                stats: data.stats.map(statInfo => ({
+                    name: statInfo.stat.name,
+                    value: statInfo.base_stat
+                })),
+                sprites: {
+                    front_shiny: data.sprites.front_shiny,
+                    back_shiny: data.sprites.back_shiny,
+                    dream_world: data.sprites.other.dream_world.front_default,
+                }
+            };
+        });
+        return pokedex;
+    } catch (error) {
+        console.error('Fehler beim Laden der Pokémon-Daten:', error);
+    }
 }
