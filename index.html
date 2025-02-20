@@ -1,54 +1,76 @@
 <!DOCTYPE html>
 <html id="html" lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-        crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="css/root.css">
-    <link rel="stylesheet" href="css/style.css"
-    >
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+      crossorigin="anonymous"
+    />
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+      crossorigin="anonymous"
+    ></script>
+    <link rel="stylesheet" href="css/root.css" />
+    <link rel="stylesheet" href="css/style.css" />
     <script src="js/root.js"></script>
     <script src="js/templates.js"></script>
     <script src="js/script.js"></script>
-    
-    
-    <link rel="shortcut icon" href="img/pokeball.png" type="image/x-icon">
-    <title>Pokedex</title>
-</head>
 
-<body onload="init()">  
+    <link rel="shortcut icon" href="img/pokeball.png" type="image/x-icon" />
+    <title>Pokedex</title>
+  </head>
+
+  <body onload="init()">
     <header>
+      <div class="max-width">
         <div class="logoArea">
-            <a href="#main"><img src="img/pokeball.png" alt=""></a>
-            <p>Pokédex</p>
+          <a href="" onclick="init()"><img src="img/pokeball.png" alt="" /></a>
+          <p>Pokédex</p>
         </div>
         <div class="searchArea">
-            <input id="searchInput" type="text" placeholder="Search Pokémon..." onkeyup="searchAndDisplayPokemons()">
-            <img onclick="clearSearch()" src="img/x-solid.svg" alt="">
+          <input
+            id="searchInput"
+            type="text"
+            placeholder="Search Pokémon..."
+            onkeyup="searchAndDisplayPokemons()"
+          />
+          <img onclick="clearSearch()" src="img/x-solid.svg" alt="" />
         </div>
+      </div>
     </header>
     <div id="loading">
-        <img id="loading-image" src="img/pokeball.png" alt="Loading..." />
-        <h3>loading pokedex...</h3>
+      <img id="loading-image" src="img/pokeball.png" alt="Loading..." />
+      <h3>loading pokedex...</h3>
     </div>
-    <main id="main">
+
+    <div class="width">
+      <main id="main">
         <h1>Gotta catch em all</h1>
-        <div class="pokecardArea" id="pokecardArea">
-            
-        </div>
+        <div class="pokecardArea" id="pokecardArea"></div>
 
-        <button  id="loadMorePokemonButton" onclick="loadMorePokemon()" type="button" class="btn btn-secondary btn-lg btn-block mb-2">load more Pokemon</button>
+        <button
+          id="loadMorePokemonButton"
+          onclick="loadMorePokemon()"
+          type="button"
+          class="btn btn-secondary btn-lg btn-block mb-2"
+        >
+          load more Pokemon
+        </button>
 
-        <div class="BigCardContainer none" onclick="closeBigPokemonCard()" id="BigCardContainer">
-            
-        </div>
-    </main>
-    <footer></footer>
-</body>
+        <div
+          class="BigCardContainer none"
+          onclick="closeBigPokemonCard()"
+          id="BigCardContainer"
+        ></div>
+      </main>
+    </div>
 
+    <footer>
+        <a onclick="showImprint()">Imprint</a>
+    </footer>
+  </body>
 </html>

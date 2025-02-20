@@ -247,3 +247,9 @@ async function handlePokemonDataRequests(requests) {
         console.error('Fehler beim Laden der Pokémon-Daten:', error);
     }
 }
+
+function showImprint() {
+    document.getElementById('main').innerHTML = '';
+    document.getElementById('main').innerHTML = getImprintHTML();
+
+}
